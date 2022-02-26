@@ -1,25 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const Header = () => {
+const Header = ({ user, setUser }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
 
   const logout = () => {
     dispatch({ type: 'LOGOUT' });
     navigate('/');
     setUser('');
   };
-
-  useEffect(() => {
-    const token = user?.token;
-
-    setUser(JSON.parse(localStorage.getItem('profile')));
-  }, [location]);
 
   return (
     <Container>

@@ -3,16 +3,10 @@ import styled from 'styled-components';
 import Leftside from './Leftside';
 import Main from './Main';
 import Rightside from './Rightside';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
-const Home = () => {
-  const user = useSelector((state) => state.userState.user);
-  const navigate = useNavigate();
-
+const Home = ({ user, setUser }) => {
   return (
     <Container>
-      {!user && navigate('/')}
       <Content>
         <Section>
           <h5>

@@ -1,33 +1,51 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import ReactPlayer from 'react-player';
+import { useDispatch } from 'react-redux';
+import { createPost } from '../actions';
 
-const PostModal = ({ handleClick, showModal }) => {
+const PostModal = ({ handleClick, showModal, setShowModal }) => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
-  const [editorText, setEditorText] = useState('');
-  const [shareImage, setShareImage] = useState('');
-  const [videoLink, setVideoLink] = useState('');
   const [assetArea, setAssetArea] = useState('');
+  const dispatch = useDispatch();
+
+  const [postData, setPostData] = useState({
+    editorText: '',
+    shareImage: '',
+    videoLink: '',
+  });
+
+  const handlePost = () => {
+    dispatch(createPost(postData));
+    setShowModal((showModal) => !showModal);
+  };
 
   const handleChange = (e) => {
     const image = e.target.files[0];
+
+    const imageUrl = JSON.stringify(URL.createObjectURL(image));
     if (image === '' || image === undefined) {
       alert(`not a image, the file is ${typeof image}`);
       return;
     }
-    setShareImage(image);
+    setPostData({ ...postData, shareImage: imageUrl });
   };
 
   const switchAssetArea = (area) => {
-    setShareImage('');
-    setVideoLink('');
+    setPostData({
+      ...postData,
+      shareImage: '',
+      videoLink: '',
+    });
     setAssetArea(area);
   };
 
   const reset = (e) => {
-    setEditorText('');
-    setShareImage('');
-    setVideoLink('');
+    setPostData({
+      editorText: '',
+      shareImage: '',
+      videoLink: '',
+    });
     setAssetArea('');
     handleClick(e);
   };
@@ -54,8 +72,10 @@ const PostModal = ({ handleClick, showModal }) => {
               </UserInfo>
               <Editor>
                 <textarea
-                  value={editorText}
-                  onChange={(e) => setEditorText(e.target.value)}
+                  value={postData.editorText}
+                  onChange={(e) =>
+                    setPostData({ ...postData, editorText: e.target.value })
+                  }
                   placeholder="What do you wanna talk about?"
                   autoFocus={true}
                 />
@@ -77,16 +97,17 @@ const PostModal = ({ handleClick, showModal }) => {
                       <label
                         htmlFor="file"
                         style={{
-                          background: '#0a66c2',
-                          color: 'white',
+                          background: 'white',
+                          color: '#0a66c2',
                           padding: '5px',
+                          fontWeight: '600',
                         }}
                       >
                         Select an image to share
                       </label>
                     </p>
-                    {shareImage && (
-                      <img src={URL.createObjectURL(shareImage)} />
+                    {postData.shareImage && (
+                      <img src={JSON.parse(postData.shareImage)} />
                     )}
                   </UploadImage>
                 ) : (
@@ -95,11 +116,16 @@ const PostModal = ({ handleClick, showModal }) => {
                       <input
                         type="text"
                         placeholder="Please input a video link"
-                        value={videoLink}
-                        onChange={(e) => setVideoLink(e.target.value)}
+                        value={postData.videoLink}
+                        onChange={(e) =>
+                          setPostData({
+                            ...postData,
+                            videoLink: e.target.value,
+                          })
+                        }
                       />
-                      {videoLink && (
-                        <ReactPlayer width={'100%'} url={videoLink} />
+                      {postData.videoLink && (
+                        <ReactPlayer width={'100%'} url={postData.videoLink} />
                       )}
                     </>
                   )
@@ -108,10 +134,10 @@ const PostModal = ({ handleClick, showModal }) => {
             </SharedContent>
             <ShareCreation>
               <AttachAssets>
-                <AssetButton onClick={() => switchAssetArea('image')}>
+                <AssetButton onClick={() => setAssetArea('image')}>
                   <img src="/images/share-image.svg" alt="" />
                 </AssetButton>
-                <AssetButton onClick={() => switchAssetArea('media')}>
+                <AssetButton onClick={() => setAssetArea('media')}>
                   <img src="/images/share-video.svg" alt="" />
                 </AssetButton>
               </AttachAssets>
@@ -122,8 +148,8 @@ const PostModal = ({ handleClick, showModal }) => {
                 </AssetButton>
               </ShareComment>
               <PostButton
-                disabled={!editorText ? true : false}
-                onClick={() => console.log('hello')}
+                disabled={!postData.editorText ? true : false}
+                onClick={handlePost}
               >
                 Post
               </PostButton>
@@ -222,9 +248,11 @@ const ShareCreation = styled.div`
 const AssetButton = styled.button`
   display: flex;
   align-items: center;
+  width: 40px;
   height: 40px;
-  min-width: auto;
   color: rgba(0, 0, 0, 0.5);
+  background: transparent;
+  border: none;
 `;
 const AttachAssets = styled.div`
   display: flex;
@@ -247,14 +275,17 @@ const ShareComment = styled.div`
 `;
 
 const PostButton = styled.button`
-  min-width: 60px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  min-width: 40px;
   border-radius: 20px;
-  padding-left: 16px;
-  padding-right: 16px;
-  background: ${(props) => (props.disabled ? 'rgba(0,0,0,0.8)' : '#0a66c2')};
+  padding-left: 20px;
+  padding-right: 20px;
+  background: ${(props) => (props.disabled ? 'rgba(0,0,0,0.1)' : '#0a66c2')};
   color: ${(props) => (props.disabled ? 'rgba(1,1,1,0.2)' : 'white')};
   &:hover {
-    background: ${(props) => (props.disabled ? 'rgba(0,0,0,0.08)' : '#004182')};
+    cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   }
 `;
 
@@ -267,6 +298,7 @@ const Editor = styled.div`
     outline: none;
     border: 1px solid rgba(0, 0, 0, 0.5);
     padding: 10px;
+    margin-bottom: 10px;
   }
   input {
     width: 100%;

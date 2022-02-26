@@ -1,48 +1,53 @@
-import { signInWithPopup } from 'firebase/auth';
-import { auth, provider, storage } from '../firebase';
-import { SET_USER, SIGN_OUT } from '../actions/actionType';
-import db from '../firebase';
-import { ref, uploadBytes } from 'firebase/storage';
+import { FETCH_ALL, CREATE, UPDATE, DELETE, LIKE } from './actionType';
 
-export const SignInAPI = () => async (dispatch) => {
+import * as api from '../api/index.js';
+
+export const getPosts = () => async (dispatch) => {
   try {
-    const response = await signInWithPopup(auth, provider);
-    dispatch({ type: SET_USER, payload: response });
+    const { data } = await api.fetchPosts();
+
+    dispatch({ type: FETCH_ALL, payload: data });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
   }
 };
 
-// export const getUserAuth = () => async (dispatch) => {
-//   try {
-//     await firebase.auth().onAuthStateChanged((user) => {
-//       if (user) {
-//         dispatch({ type: SET_USER });
-//       }
-//     });
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
-export const SignOutAPI = () => async (dispatch) => {
+export const createPost = (post) => async (dispatch) => {
   try {
-    await auth.signOut();
-    dispatch({ type: SIGN_OUT });
+    const { data } = await api.createPost(post);
+
+    dispatch({ type: CREATE, payload: data });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
   }
 };
 
-export const postArticleAPI = (image, user) => async (dispatch) => {
+export const updatePost = (id, post) => async (dispatch) => {
   try {
-    console.log(image);
-    if (image == null) return;
+    const { data } = await api.updatePost(id, post);
 
-    await uploadBytes(ref(storage, `/images/${image.name}`));
-
-    console.log('Uploaded a blob or file!');
+    dispatch({ type: UPDATE, payload: data });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
+  }
+};
+
+export const likePost = (id) => async (dispatch) => {
+  try {
+    const { data } = await api.likePost(id);
+
+    dispatch({ type: LIKE, payload: data });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+export const deletePost = (id) => async (dispatch) => {
+  try {
+    await api.deletePost(id);
+
+    dispatch({ type: DELETE, payload: id });
+  } catch (error) {
+    console.log(error.message);
   }
 };

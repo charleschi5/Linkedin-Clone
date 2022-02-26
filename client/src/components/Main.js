@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import PostModal from './PostModal';
 
 const Main = () => {
   const [showModal, setShowModal] = useState(false);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
+  const post = useSelector((state) => state.postState.postData);
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -17,25 +20,29 @@ const Main = () => {
     <Container>
       <SharBox>
         <div>
-          <img src="/images/user.svg" alt="" />
+          {user?.result?.imageUrl ? (
+            <img src={user?.result?.imageUrl} alt="" />
+          ) : (
+            <img src="/images/user.svg" alt="" />
+          )}
           <button onClick={handleClick}>Write a post</button>
         </div>
 
         <div>
           <button>
-            <img src="/images/photo-icon.svg" alt="" />
+            <img src="/images/photo-icon.png" alt="" />
             <span>Photo</span>
           </button>
           <button>
-            <img src="/images/video-icon.svg" alt="" />
+            <img src="/images/video-icon.png" alt="" />
             <span>Video</span>
           </button>
           <button>
-            <img src="/images/event-icon.svg" alt="" />
+            <img src="/images/calendar-icon.png" alt="" />
             <span>Event</span>
           </button>
           <button>
-            <img src="/images/article-icon.svg" alt="" />
+            <img src="/images/article-icon.png" alt="" />
             <span>Write article</span>
           </button>
         </div>
@@ -55,45 +62,55 @@ const Main = () => {
               <img src="/images/ellipsis.svg" alt="" />
             </button>
           </SharedActor>
-          <Description>Descrition</Description>
+          <Description>{post ? post.editorText : 'Description'}</Description>
           <SharedImg>
-            <a>
-              <img src="/images/shared-image.jpg" alt="" />
-            </a>
+            {post ? (
+              <a>
+                <img src={JSON.parse(post.shareImage)} alt="" />
+              </a>
+            ) : (
+              <a>
+                <img src="/images/shared-image.jpg" alt="" />
+              </a>
+            )}
           </SharedImg>
           <SocialCounts>
             <li>
               <button>
                 <img src="/images/thumbs-up.svg" alt="" />
                 <img src="/images/clapping-hands.svg" alt="" />
-                <span>75</span>
+                <span>950</span>
               </button>
             </li>
             <li>
-              <a>2 comments</a>
+              <a>197 comments</a>
             </li>
           </SocialCounts>
           <SocialActions>
             <button>
-              <img src="/images/like-icon.svg" alt="" />
+              <img src="/images/like-icon.png" alt="" />
               <span>Like</span>
             </button>
             <button>
-              <img src="/images/comment-icon.svg" alt="" />
+              <img src="/images/comment-icon.png" alt="" />
               <span>Comments</span>
             </button>
             <button>
-              <img src="/images/share-icon.svg" alt="" />
+              <img src="/images/share-icon.png" alt="" />
               <span>Share</span>
             </button>
             <button>
-              <img src="/images/send-icon.svg" alt="" />
+              <img src="/images/send-icon.png" alt="" />
               <span>Send</span>
             </button>
           </SocialActions>
         </Article>
       </div>
-      <PostModal showModal={showModal} handleClick={handleClick} />
+      <PostModal
+        showModal={showModal}
+        handleClick={handleClick}
+        setShowModal={setShowModal}
+      />
     </Container>
   );
 };
@@ -251,6 +268,7 @@ const SocialCounts = styled.ul`
   line-height: 1.3;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   overflow: auto;
   margin: 0 16px;
   padding: 8px 0;
@@ -265,7 +283,17 @@ const SocialCounts = styled.ul`
       background: transparent;
       border: none;
       img {
-        width: 25px;
+        width: 15px;
+      }
+      span {
+        font-size: 13px;
+        font-weight: 400;
+        color: gray;
+        &:hover {
+          color: #0a66c2;
+          text-decoration: underline;
+          cursor: pointer;
+        }
       }
     }
   }
@@ -284,7 +312,11 @@ const SocialActions = styled.div`
     border: none;
     margin: 0 4px;
     padding: 8px;
-    color: #0a66c2;
+    background: transparent;
+    &:hover {
+      background: #eee;
+      border-radius: 5px;
+    }
 
     @media (min-width: 768px) {
       span {
