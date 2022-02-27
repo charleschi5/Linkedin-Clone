@@ -40,7 +40,7 @@ const Login = () => {
         </Hero>
         <Form>
           <GoogleLogin
-            clientId="760498821704-7bk6i3m7c5baimucp393qcacr83u434i.apps.googleusercontent.com"
+            clientId=""
             buttonText="Google Sign In"
             onSuccess={googleSuccess}
             onFailure={googleFailure}
