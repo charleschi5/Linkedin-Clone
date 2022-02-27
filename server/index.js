@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
 app.use('/posts', postRoutes);
 
 const CONNECTION_URL =
-  'mongodb+srv://olivertwist:oliver0924!@cluster0.d0wny.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+  'mongodb+srv://@cluster0.d0wny.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 const PORT = process.env.PORT || 5000;
 
 mongoose
