@@ -4,12 +4,12 @@ import { getFirestore } from 'firebase/firestore/lite';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyB3Cn4PzKfpZZMu-wix-kzMMuFPJB4BeMA',
-  authDomain: 'linkedin-clone-project-8a27f.firebaseapp.com',
-  projectId: 'linkedin-clone-project-8a27f',
-  storageBucket: 'linkedin-clone-project-8a27f.appspot.com',
-  messagingSenderId: '733822830303',
-  appId: '1:733822830303:web:f0aac8b88e7cee7d3ccb6a',
+  apiKey: '',
+  authDomain: '',
+  projectId: '',
+  storageBucket: '',
+  messagingSenderId: '',
+  appId: '',
 };
 
 const app = initializeApp(firebaseConfig);
