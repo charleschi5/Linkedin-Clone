@@ -3,14 +3,7 @@ import { getStorage } from 'firebase/storage';
 import { getFirestore } from 'firebase/firestore/lite';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
-const firebaseConfig = {
-  apiKey: '',
-  authDomain: '',
-  projectId: '',
-  storageBucket: '',
-  messagingSenderId: '',
-  appId: '',
-};
+const firebaseConfig = {};
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
