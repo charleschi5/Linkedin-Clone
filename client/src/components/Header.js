@@ -94,7 +94,7 @@ const Header = ({ user, setUser }) => {
 };
 
 const Container = styled.div`
-  background-color: white;
+  background-color: red;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   left: 0;
   padding: 5px 24px;
